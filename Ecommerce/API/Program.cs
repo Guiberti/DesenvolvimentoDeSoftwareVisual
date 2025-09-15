@@ -1,3 +1,5 @@
+using API.Models;
+Console.Clear();
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 
@@ -11,4 +13,9 @@ app.MapGet("/endereco", () => "Outra funcionalidade");
 
 app.MapPost("/endereco", () => "Funcionalidade do POST");
 
-app.Run();  
+
+Produto produto = new Produto();
+produto.Nome = "Teclado";
+Console.WriteLine(produto.Nome);
+
+app.Run();
