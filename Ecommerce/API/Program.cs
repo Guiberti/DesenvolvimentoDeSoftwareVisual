@@ -10,8 +10,8 @@ var app = builder.Build();
 
 //Lista de produtos fakes
 
-List<Produto> produtos = new List<Produto>();
-/* {
+List<Produto> produtos = new List<Produto> 
+{
     new Produto { Nome = "Notebook", Quantidade = 5, Preco = 3500.00 },
     new Produto { Nome = "Smartphone", Quantidade = 10, Preco = 1800.00 },
     new Produto { Nome = "Mouse Gamer", Quantidade = 20, Preco = 120.00 },
@@ -22,7 +22,7 @@ List<Produto> produtos = new List<Produto>();
     new Produto { Nome = "Headset", Quantidade = 12, Preco = 200.00 },
     new Produto { Nome = "HD Externo 1TB", Quantidade = 9, Preco = 400.00 },
     new Produto { Nome = "Webcam Full HD", Quantidade = 6, Preco = 300.00 }
-}; */
+};
 
 // Métodos HTTP são ações usadas para comunicação entre cliente e servidor.
 // Os principais são:
@@ -48,19 +48,35 @@ app.MapGet("/api/produto/listar", () =>
         return Results.Ok(produtos);
     }
     return Results.NotFound("Lista vazia");
-
 });
+
+//GET: /api/produto/buscar/nome_produto_buscado
+app.MapGet("api/produto/buscar/{nome}", (string nome) =>
+{
+    foreach (Produto nome in produtos)
+    {
+        return Results.
+    }
+});
+
 
 //POST: /api/produto/cadastrar  
 app.MapPost("api/produto/cadastrar", (Produto produto) =>
 {
 
-    if (produtos.Any(p => p.Nome.Equals(produto.Nome) == )) {
-        
+    foreach (Produto produtoCadastrado in produtos)
+    {
+        if (produtoCadastrado.Nome == produto.Nome)
+        {
+            return Results.Conflict("Produto já está cadastrado!");
+        }
     }
 
     produtos.Add(produto);
+    return Results.Created("", produto);
 });
+
+//Implementar a remoção e atualização do produto
 
 
 app.Run();
