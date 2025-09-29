@@ -13,3 +13,18 @@ Content-Type: application/json
     "quantidade" : 10,
     "preco" : 59.99
 }
+
+### Buscar produtos
+POST http://localhost:5190/api/produto/buscar/Notebook
+
+### Remover produtos por id
+DELETE http://localhost:5190/api/produto/deletar/0f49711e-7fa3-4db6-abca-e09ad329c57e
+### Atualizar produtos
+PATCH  http://localhost:5190/api/produto/atualizar/0f49711e-7fa3-4db6-abca-e09ad329c57e
+Content-Type: application/json
+
+{
+    "nome" : "Mouse",
+    "quantidade" : 15,
+    "preco" : 69.99
+}
