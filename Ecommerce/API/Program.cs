@@ -95,3 +95,6 @@ app.MapPatch("/api/produto/atualizar/{id}", (string id, Produto produtoAtualizad
 });
 
 app.Run();
+
+AppDataContext ctx = new AppDataContext();
+ctx.Add
