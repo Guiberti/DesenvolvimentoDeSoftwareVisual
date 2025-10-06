@@ -1,100 +1,128 @@
-using System.Collections;
 using API.Models;
-Console.Clear();
+using Microsoft.AspNetCore.Mvc;
+
+// Console.Clear();
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
-
-//Funcionalidade - Requisições
-// - URL/Caminho/Endereço
-// - Um método HTTP
 
 //Lista de produtos fakes
 List<Produto> produtos = new List<Produto>
 {
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "Notebook", Quantidade = 5, Preco = 3500.00 },
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "Smartphone", Quantidade = 10, Preco = 1800.00 },
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "Mouse Gamer", Quantidade = 20, Preco = 120.00 },
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "Teclado Mecânico", Quantidade = 15, Preco = 250.00 },
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "Monitor 24\"", Quantidade = 8, Preco = 900.00 },
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "Impressora", Quantidade = 4, Preco = 750.00 },
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "Cadeira Gamer", Quantidade = 7, Preco = 1100.00 },
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "Headset", Quantidade = 12, Preco = 200.00 },
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "HD Externo 1TB", Quantidade = 9, Preco = 400.00 },
-    new Produto { Id = Guid.NewGuid().ToString(), Nome = "Webcam Full HD", Quantidade = 6, Preco = 300.00 }
+    new Produto { Nome = "Camiseta Básica", Quantidade = 50, Preco = 29.99 },
+    new Produto { Nome = "Calça Jeans", Quantidade = 30, Preco = 99.90 },
+    new Produto { Nome = "Tênis Esportivo", Quantidade = 20, Preco = 149.50 },
+    new Produto { Nome = "Mochila Escolar", Quantidade = 15, Preco = 79.99 },
+    new Produto { Nome = "Relógio Digital", Quantidade = 10, Preco = 199.90 },
+    new Produto { Nome = "Óculos de Sol", Quantidade = 25, Preco = 59.90 },
+    new Produto { Nome = "Boné Aba Curva", Quantidade = 40, Preco = 39.99 },
+    new Produto { Nome = "Jaqueta de Couro", Quantidade = 5, Preco = 299.99 },
+    new Produto { Nome = "Meias Esportivas", Quantidade = 100, Preco = 9.90 },
+    new Produto { Nome = "Cinto de Couro", Quantidade = 35, Preco = 49.90 }
 };
 
-// Métodos HTTP são ações usadas para comunicação entre cliente e servidor.
-// GET -> buscar dados
-// POST -> enviar/criar dados
-// PUT -> atualizar dados
-// DELETE -> excluir dados
-// PATCH - Atualiza parcialmente um recurso
+//Funcionalidade - Requisições
+// - URL/Caminho/Endereço
+// - Um método HTTP
+// - Dados: rota (URL) e corpo (opcional)
+
+//Respostas
+// - Código de status HTTP
+// - Corpo/Dados
+
+// Métodos HTTP:
+// GET    - Recuperar/Enviar dados da sua API/aplicação
+// POST   - Enviar/Cadastrar dados para criar um novo recurso
+// PUT    - Atualiza um recurso existente
+// DELETE - Remove um recurso
+// PATCH  - Atualiza parcialmente um recurso
+
+//Códigos de Status HTTP
+// 2xx (Sucesso)
+// 200 OK: A solicitação foi bem-sucedida e o servidor retornou a resposta esperada.
+// 201 Created: A solicitação foi bem-sucedida e um novo recurso foi criado como resultado (geralmente usado em POST).
+// 204 No Content: A solicitação foi bem-sucedida, mas não há conteúdo para retornar (geralmente em respostas de DELETE ou PUT sem necessidade de retornar dados).
+// 4xx (Erro do Cliente)
+// 400 Bad Request: A solicitação é inválida ou malformada; o servidor não conseguiu entendê-la.
+// 401 Unauthorized: O cliente não tem permissão para acessar o recurso, geralmente porque precisa autenticar-se.
+// 404 Not Found: O recurso solicitado não foi encontrado no servidor.
+// 409 Conflict: A solicitação não pôde ser processada devido a um conflito, geralmente relacionado a dados (como tentar criar um recurso com o mesmo identificador que outro já existe).
 
 app.MapGet("/", () => "API de Produtos");
 
 //GET: /api/produto/listar
 app.MapGet("/api/produto/listar", () =>
 {
+    //Validar a lista de produtos para saber 
+    //se existe algo dentro
     if (produtos.Any())
     {
         return Results.Ok(produtos);
     }
-    return Results.NotFound("Lista vazia");
+    return Results.NotFound("Lista vazia!");
 });
 
-//GET: /api/produto/buscar/nome_produto_buscado
-app.MapGet("/api/produto/buscar/{nome}", (string nome) =>
+//GET: /api/produto/buscar/nome_do_produto
+app.MapGet("/api/produto/buscar/{nome}",
+    ([FromRoute] string nome) =>
 {
-    Produto? resultado = produtos.FirstOrDefault(x => x.Nome == nome);
+    //Expressão lambda
+    Produto? resultado =
+        produtos.FirstOrDefault(x => x.Nome == nome);
     if (resultado is null)
     {
-        return Results.NotFound("Produto não cadastrado!");
+        return Results.NotFound("Produto não encontrado!");
     }
     return Results.Ok(resultado);
 });
 
-//POST: /api/produto/cadastrar  
-app.MapPost("/api/produto/cadastrar", (Produto produto) =>
+//POST: /api/produto/cadastrar
+app.MapPost("/api/produto/cadastrar",
+    ([FromBody] Produto produto) =>
 {
-    Produto? resultado = produtos.FirstOrDefault(x => x.Nome == produto.Nome);
-    if (resultado is not null)
+    //Não permitir o cadastro de um produto
+    //com o mesmo nome
+    foreach (Produto produtoCadastrado in produtos)
     {
-        return Results.Conflict("Produto já cadastrado!");
+        if (produtoCadastrado.Nome == produto.Nome)
+        {
+            return Results.Conflict("Produto já cadastrado!");
+        }
     }
-    produto.Id = Guid.NewGuid().ToString();
     produtos.Add(produto);
-    return Results.Created($"/api/produto/buscar/{produto.Nome}", produto);
+    return Results.Created("", produto);
 });
 
-//DELETE: /api/produto/deletar/{id}
-app.MapDelete("/api/produto/deletar/{id}", (string id) =>
+//DELETE: /api/produto/deletar/id
+app.MapDelete("/api/produto/deletar/{id}",
+    ([FromRoute] string id) =>
 {
-    Produto? resultado = produtos.FirstOrDefault(x => x.Id == id);
+    Produto? resultado = produtos.FirstOrDefault
+        (x => x.Id == id);
     if (resultado is null)
     {
-        return Results.NotFound("Produto não encontrado!");
+        return Results.NotFound("Produto não encotrado!");
     }
     produtos.Remove(resultado);
     return Results.Ok(resultado);
 });
 
-//PUT: /api/produto/atualizar/{id}
-app.MapPatch("/api/produto/atualizar/{id}", (string id, Produto produtoAtualizado) =>
+//DELETE: /api/produto/alterar/id
+app.MapPatch("/api/produto/alterar/{id}",
+    ([FromRoute] string id,
+    [FromBody] Produto produtoAlterado) =>
 {
-    Produto? resultado = produtos.FirstOrDefault(x => x.Id == id);
-
+    Produto? resultado = produtos.FirstOrDefault
+        (x => x.Id == id);
     if (resultado is null)
     {
         return Results.NotFound("Produto não encontrado!");
     }
-    // Atualiza apenas os campos necessários
-    resultado.Nome = produtoAtualizado.Nome;
-    resultado.Preco = produtoAtualizado.Preco;
-    resultado.Quantidade = produtoAtualizado.Quantidade;
+    resultado.Nome = produtoAlterado.Nome;
+    resultado.Quantidade = produtoAlterado.Quantidade;
+    resultado.Preco = produtoAlterado.Preco;
     return Results.Ok(resultado);
 });
 
-app.Run();
 
-AppDataContext ctx = new AppDataContext();
-ctx.Add
+//Implementar a remoção e atualização do produto
+app.Run();
