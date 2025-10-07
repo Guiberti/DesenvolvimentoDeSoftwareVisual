@@ -9,22 +9,23 @@ POST http://localhost:5190/api/produto/cadastrar
 Content-Type: application/json
 
 {
-    "nome" : "Inversor",
+    "nome" : "Mouse",
     "quantidade" : 10,
     "preco" : 59.99
 }
 
 ### Buscar produtos
-POST http://localhost:5190/api/produto/buscar/Notebook
+POST http://localhost:5190/api/produto/buscar/Inversor
 
 ### Remover produtos por id
-DELETE http://localhost:5190/api/produto/deletar/0f49711e-7fa3-4db6-abca-e09ad329c57e
+DELETE http://localhost:5190/api/produto/deletar/115bb18e-22f2-4bad-a796-c2c0ce803ed9
+
 ### Atualizar produtos
-PATCH  http://localhost:5190/api/produto/atualizar/0f49711e-7fa3-4db6-abca-e09ad329c57e
+PATCH  http://localhost:5190/api/produto/atualizar/c6381834-6022-4588-94b7-4e75993a25a7
 Content-Type: application/json
 
 {
-    "nome" : "Mouse",
+    "nome" : "Teclado ALTERADO",
     "quantidade" : 15,
     "preco" : 69.99
 }
