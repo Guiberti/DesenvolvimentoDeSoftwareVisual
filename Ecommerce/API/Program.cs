@@ -4,21 +4,31 @@ using Microsoft.AspNetCore.Mvc;
 // Console.Clear();
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>();
+
+builder.Services.AddCors(
+    options => options.AddPolicy("Acesso Total",
+    configs => configs
+    .AllowAnyOrigin()
+    .AllowAnyHeader()
+    .AllowAnyMethod())
+);
+
+
 var app = builder.Build();
 
 //Lista de produtos fakes
 List<Produto> produtos = new List<Produto>
 {
-    new Produto { Nome = "Camiseta Básica", Quantidade = 50, Preco = 29.99 },
-    new Produto { Nome = "Calça Jeans", Quantidade = 30, Preco = 99.90 },
-    new Produto { Nome = "Tênis Esportivo", Quantidade = 20, Preco = 149.50 },
-    new Produto { Nome = "Mochila Escolar", Quantidade = 15, Preco = 79.99 },
-    new Produto { Nome = "Relógio Digital", Quantidade = 10, Preco = 199.90 },
-    new Produto { Nome = "Óculos de Sol", Quantidade = 25, Preco = 59.90 },
-    new Produto { Nome = "Boné Aba Curva", Quantidade = 40, Preco = 39.99 },
-    new Produto { Nome = "Jaqueta de Couro", Quantidade = 5, Preco = 299.99 },
-    new Produto { Nome = "Meias Esportivas", Quantidade = 100, Preco = 9.90 },
-    new Produto { Nome = "Cinto de Couro", Quantidade = 35, Preco = 49.90 }
+    new Produto { Id = Guid.NewGuid(), Nome = "Camiseta Básica", Quantidade = 50, Preco = 29.99 },
+    new Produto { Id = Guid.NewGuid(), Nome = "Calça Jeans", Quantidade = 30, Preco = 99.90 },
+    new Produto { Id = Guid.NewGuid(), Nome = "Tênis Esportivo", Quantidade = 20, Preco = 149.50 },
+    new Produto { Id = Guid.NewGuid(), Nome = "Mochila Escolar", Quantidade = 15, Preco = 79.99 },
+    new Produto { Id = Guid.NewGuid(), Nome = "Relógio Digital", Quantidade = 10, Preco = 199.90 },
+    new Produto { Id = Guid.NewGuid(), Nome = "Óculos de Sol", Quantidade = 25, Preco = 59.90 },
+    new Produto { Id = Guid.NewGuid(), Nome = "Boné Aba Curva", Quantidade = 40, Preco = 39.99 },
+    new Produto { Id = Guid.NewGuid(), Nome = "Jaqueta de Couro", Quantidade = 5, Preco = 299.99 },
+    new Produto { Id = Guid.NewGuid(), Nome = "Meias Esportivas", Quantidade = 100, Preco = 9.90 },
+    new Produto { Id = Guid.NewGuid(), Nome = "Cinto de Couro", Quantidade = 35, Preco = 49.90 }
 };
 
 //Funcionalidade - Requisições
@@ -93,10 +103,10 @@ app.MapPost("/api/produto/cadastrar",
 
         return Results.Conflict("Esse produto já existe!");
 
-    }    
-        ctx.Produtos.Add(produto);
-        ctx.SaveChanges();
-        return Results.Created("", produto);
+    }
+    ctx.Produtos.Add(produto);
+    ctx.SaveChanges();
+    return Results.Created("", produto);
 });
 
 //DELETE: /api/produto/deletar/id
@@ -135,4 +145,5 @@ app.MapPatch("/api/produto/alterar/{id}",
 
 
 //Implementar a remoção e atualização do produto
+app.UseCors("Acesso Total");
 app.Run();
