@@ -10,9 +10,9 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
-    [Migration("20251006231212_AdicionarTabelaCategoria")]
-    partial class AdicionarTabelaCategoria
+    [DbContext(typeof(AppDataContext))]
+    [Migration("20251110225157_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -22,7 +22,7 @@ namespace API.Migrations
 
             modelBuilder.Entity("API.Models.Categoria", b =>
                 {
-                    b.Property<int>("CategoriaId")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -33,7 +33,7 @@ namespace API.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.HasKey("CategoriaId");
+                    b.HasKey("Id");
 
                     b.ToTable("Categorias");
                 });

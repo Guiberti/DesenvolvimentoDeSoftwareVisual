@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Produto from "../../../models/Produto";
+import axios from "axios";
 
 //Regras para criação de um componente
 //1 - Componente deve ser uma função
@@ -8,8 +9,9 @@ import Produto from "../../../models/Produto";
 //seja utilizado na aplicação
 
 function ListarProdutos() {
-  //Estados | variáveis
-const [produtos, setProdutos] = useState<Produto[]>([]);
+  //Estados | Variáveis
+  //const [nome, setNome] = useState("Diogo Steinke Deconto");
+  const [produtos, setProdutos] = useState<Produto[]>([]);
 
   //useEffect é utilizado para executar algum código no
   //momento em que o componente é carregado no navegador
@@ -20,17 +22,15 @@ const [produtos, setProdutos] = useState<Produto[]>([]);
   async function listarProdutosAPI() {
     //AXIOS - Biblioteca para realizar requisições
     try {
-      const resposta = await fetch("http://localhost:5190/api/produto/listar");
 
-      if (!resposta.ok) {
-        throw new Error("Erro na requisição: " + resposta.statusText);
-      }
+      const resposta = await axios.get<Produto[]>("http://localhost:5190/api/produto/listar");
 
-      const dados = await resposta.json();
+      const dados = resposta.data;
       setProdutos(dados);
-    } catch (error) {
-      console.log(error);
     }
+      catch (error){
+        console.log(error);
+      }
   }
 
   return (
@@ -43,19 +43,19 @@ const [produtos, setProdutos] = useState<Produto[]>([]);
             <th>Nome</th>
             <th>Preço</th>
             <th>Quantidade</th>
-            <th>Criado Em</th>
+            <th>Criado em</th>
           </tr>
         </thead>
         <tbody>
-            {produtos.map((produto) => (
-                <tr key={produto.id}>
-                    <td>{produto.id}</td>
-                    <td>{produto.nome}</td>
-                    <td>{produto.preco}</td>
-                    <td>{produto.quantidade}</td>
-                    <td>{produto.criadoEm}</td>
-                </tr>
-            ))}
+          {produtos.map((produto) => (
+            <tr key={produto.id}>
+              <td>{produto.id}</td>
+              <td>{produto.nome}</td>
+              <td>{produto.preco}</td>
+              <td>{produto.quantidade}</td>
+              <td>{produto.criadoEm}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

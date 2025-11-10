@@ -3,7 +3,16 @@ using Microsoft.AspNetCore.Mvc;
 
 // Console.Clear();
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<AppDbContext>();
+builder.Services.AddDbContext<AppDataContext>();
+
+builder.Services.AddCors(options =>
+    options.AddPolicy("Acesso Total",
+        configs => configs
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod())
+);
+
 var app = builder.Build();
 
 //Lista de produtos fakes
@@ -52,7 +61,7 @@ app.MapGet("/", () => "API de Produtos");
 
 //GET: /api/produto/listar
 app.MapGet("/api/produto/listar",
-    ([FromServices] AppDbContext ctx) =>
+    ([FromServices] AppDataContext ctx) =>
 {
     //Validar a lista de produtos para saber 
     //se existe algo dentro
@@ -66,7 +75,7 @@ app.MapGet("/api/produto/listar",
 //GET: /api/produto/buscar/nome_do_produto
 app.MapGet("/api/produto/buscar/{nome}",
     ([FromRoute] string nome,
-    [FromServices] AppDbContext ctx) =>
+    [FromServices] AppDataContext ctx) =>
 {
     //Expressão lambda
     Produto? resultado =
@@ -81,7 +90,7 @@ app.MapGet("/api/produto/buscar/{nome}",
 //POST: /api/produto/cadastrar
 app.MapPost("/api/produto/cadastrar",
     ([FromBody] Produto produto,
-    [FromServices] AppDbContext ctx) =>
+    [FromServices] AppDataContext ctx) =>
 {
     //Não permitir o cadastro de um produto
     //com o mesmo nome
@@ -99,7 +108,7 @@ app.MapPost("/api/produto/cadastrar",
 //DELETE: /api/produto/deletar/id
 app.MapDelete("/api/produto/deletar/{id}",
     ([FromRoute] string id,
-    [FromServices] AppDbContext ctx) =>
+    [FromServices] AppDataContext ctx) =>
 {
     Produto? resultado = ctx.Produtos.Find(id);
     if (resultado is null)
@@ -115,7 +124,7 @@ app.MapDelete("/api/produto/deletar/{id}",
 app.MapPatch("/api/produto/alterar/{id}",
     ([FromRoute] string id,
     [FromBody] Produto produtoAlterado,
-    [FromServices] AppDbContext ctx) =>
+    [FromServices] AppDataContext ctx) =>
 {
     Produto? resultado = ctx.Produtos.Find(id);
     if (resultado is null)
@@ -130,6 +139,5 @@ app.MapPatch("/api/produto/alterar/{id}",
     return Results.Ok(resultado);
 });
 
-
-//Implementar a remoção e atualização do produto
+app.UseCors("Acesso Total");
 app.Run();

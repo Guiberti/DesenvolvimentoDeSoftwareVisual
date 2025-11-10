@@ -16,4 +16,14 @@ public class Produto
     public double Preco { get; set; }
     public DateTime CriadoEm { get; set; }
 
+    //Java
+    // private string nome;
+    // public string getNome()
+    // {
+    //     return "Nome: " + nome;
+    // }
+    // public void setNome(string nome)
+    // {
+    //     this.nome = nome + " " + DateTime.Now;
+    // }
 }

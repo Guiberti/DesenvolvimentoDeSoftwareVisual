@@ -3,22 +3,37 @@ using System;
 using API.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
 namespace API.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
-    [Migration("20251006224550_InitialCreate")]
-    partial class InitialCreate
+    [DbContext(typeof(AppDataContext))]
+    partial class AppDataContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.20");
+
+            modelBuilder.Entity("API.Models.Categoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("CriadoEm")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Categorias");
+                });
 
             modelBuilder.Entity("API.Models.Produto", b =>
                 {
